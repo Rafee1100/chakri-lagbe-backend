@@ -46,6 +46,15 @@ client.connect(err => {
       })
   })
 
+  app.post('/addemployer', (req, res) => {
+    const newEmployer = req.body;
+    employerCollection.insertOne(newEmployer)
+      .then(result => {
+        res.send(result.insertedCount > 0)
+      })
+
+  })
+
 
 });
 
