@@ -30,6 +30,12 @@ client.connect(err => {
         res.send(items)
       })
   })
+  app.get('/employer', (req, res) => {
+    employerCollection.find()
+      .toArray((err, items) => {
+        res.send(items)
+      })
+  })
   app.post('/isadmin', (req, res) => {
     const email = req.body.email;
     adminCollection.find({ email: email })
@@ -53,6 +59,14 @@ client.connect(err => {
         res.send(result.insertedCount > 0)
       })
 
+  })
+
+  app.post('/isemployer', (req, res) => {
+    const email = req.body.email;
+    employerCollection.find({ email: email })
+      .toArray((err, admin) => {
+        res.send(admin.length > 0);
+      })
   })
 
 
