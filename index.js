@@ -17,7 +17,7 @@ client.connect(err => {
   console.log(err)
   const jobCollection = client.db("JobLagbe").collection("Jobs");
   const employerCollection = client.db("JobLagbe").collection("employer");
-  const seekerCollection = client.db("JobLagbe").collection("seeker");
+  const approveJobCollection = client.db("JobLagbe").collection("approveJob");
   const adminCollection = client.db("JobLagbe").collection("admin");
 
   app.get('/', (req, res) => {
@@ -30,12 +30,24 @@ client.connect(err => {
         res.send(items)
       })
   })
+  app.get('/approvejobs', (req, res) => {
+    approveJobCollection.find()
+      .toArray((err, items) => {
+        res.send(items)
+      })
+  })
 
   app.get('/job/:id', (req, res) => {
     jobCollection.find({_id :ObjectID(req.params.id)})
         .toArray((err, document) => {
             res.json(document[0]);
         })
+})
+app.get('/admin/approve/:id', (req, res) => {
+  jobCollection.find({_id :ObjectID(req.params.id)})
+      .toArray((err, document) => {
+          res.json(document[0]);
+      })
 })
 
   app.get('/employer', (req, res) => {
@@ -59,6 +71,13 @@ client.connect(err => {
         res.send(result.insertedCount > 0)
       })
   })
+  app.post('/addApproveJob', (req, res) => {
+    const newApproveJobData = req.body;
+    approveJobCollection.insertOne(newApproveJobData)
+      .then(result => {
+        res.send(result.insertedCount > 0)
+      })
+  })
 
   app.post('/addemployer', (req, res) => {
     const newEmployer = req.body;
@@ -76,6 +95,11 @@ client.connect(err => {
         res.send(admin.length > 0);
       })
   })
+  app.delete('/deleteJob/:id',(req, res)=>{
+    const id = ObjectID(req.params.id);
+    approveJobCollection.findOneAndDelete({ _id: id})
+    .then(documents => res.send(!!documents.value))
+})
 
 
 });
