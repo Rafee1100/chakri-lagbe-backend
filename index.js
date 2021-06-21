@@ -38,17 +38,17 @@ client.connect(err => {
   })
 
   app.get('/job/:id', (req, res) => {
-    jobCollection.find({_id :ObjectID(req.params.id)})
-        .toArray((err, document) => {
-            res.json(document[0]);
-        })
-})
-app.get('/admin/approve/:id', (req, res) => {
-  jobCollection.find({_id :ObjectID(req.params.id)})
+    jobCollection.find({ _id: ObjectID(req.params.id) })
       .toArray((err, document) => {
-          res.json(document[0]);
+        res.json(document[0]);
       })
-})
+  })
+  app.get('/admin/approve/:id', (req, res) => {
+    jobCollection.find({ _id: ObjectID(req.params.id) })
+      .toArray((err, document) => {
+        res.json(document[0]);
+      })
+  })
 
   app.get('/employer', (req, res) => {
     employerCollection.find()
@@ -95,11 +95,18 @@ app.get('/admin/approve/:id', (req, res) => {
         res.send(admin.length > 0);
       })
   })
-  app.delete('/deleteJob/:id',(req, res)=>{
+  app.delete('/deleteJob/:id', (req, res) => {
     const id = ObjectID(req.params.id);
-    approveJobCollection.findOneAndDelete({ _id: id})
-    .then(documents => res.send(!!documents.value))
-})
+    approveJobCollection.findOneAndDelete({ _id: id })
+      .then(documents => res.send(!!documents.value))
+  })
+  app.post('/addadmin', (req, res) => {
+    const newAdmin = req.body;
+    adminCollection.insertOne(newAdmin)
+      .then(result => {
+        res.json(result.insertedCount > 0)
+      })
+  })
 
 
 });
