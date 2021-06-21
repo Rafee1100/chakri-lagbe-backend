@@ -30,6 +30,14 @@ client.connect(err => {
         res.send(items)
       })
   })
+
+  app.get('/job/:id', (req, res) => {
+    jobCollection.find({_id :ObjectID(req.params.id)})
+        .toArray((err, document) => {
+            res.json(document[0]);
+        })
+})
+
   app.get('/employer', (req, res) => {
     employerCollection.find()
       .toArray((err, items) => {
